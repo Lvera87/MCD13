@@ -1,65 +1,75 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { projects } from "@/data/projects";
+import ProjectSidebar from "@/components/ProjectSidebar";
+import ProjectShowcase from "@/components/ProjectShowcase";
 
 export default function Home() {
+  const [activeProjectId, setActiveProjectId] = useState("01");
+  const [mounted, setMounted] = useState(false);
+
+  // Anti-Hydration Mismatch Shield (kills the "red screen" caused by your browser extensions)
+  useEffect(() => {
+    setTimeout(() => {
+      setMounted(true);
+    }, 0);
+  }, []);
+
+  const activeProject = projects.find((p) => p.id === activeProjectId) || projects[0];
+
+  const handleNext = () => {
+    const currentIndex = projects.findIndex(p => p.id === activeProjectId);
+    const nextIndex = (currentIndex + 1) % projects.length;
+    setActiveProjectId(projects[nextIndex].id);
+  };
+
+  const handlePrev = () => {
+    const currentIndex = projects.findIndex(p => p.id === activeProjectId);
+    const prevIndex = (currentIndex - 1 + projects.length) % projects.length;
+    setActiveProjectId(projects[prevIndex].id);
+  };
+
+  if (!mounted) return <div className="dark bg-zinc-950 min-h-screen w-full"></div>;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <main className="dark relative h-screen max-h-screen w-full bg-slate-50 dark:bg-zinc-950 transition-colors duration-500 overflow-hidden flex items-center justify-center p-4 md:p-8 select-none fixed inset-0">
+      {/* Background Layer */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 opacity-[0.4] dark:opacity-[0.1] bg-noise mix-blend-overlay"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 blur-[150px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-lime-400/10 blur-[150px] rounded-full"></div>
+      </div>
+
+      {/* Main Grid Layout - Restored Sidebar Position */}
+      <div className="relative z-10 w-full h-full max-w-[1500px] grid grid-cols-12 gap-8 items-center justify-center">
+
+        {/* Left/Center: Showcase */}
+        <div className="col-span-12 lg:col-span-9 flex items-center justify-center h-full max-h-[85vh]">
+          <div className="w-full h-full flex items-center justify-center">
+            <ProjectShowcase
+              key={activeProjectId}
+              project={activeProject}
+              onNext={handleNext}
+              onPrev={handlePrev}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
-    </div>
+
+        {/* Right: Floating Sidebar */}
+        <div className="hidden lg:flex lg:col-span-3 flex-col h-full max-h-[85vh] justify-center">
+          <ProjectSidebar
+            projects={projects}
+            activeProjectId={activeProjectId}
+            onProjectSelect={setActiveProjectId}
+          />
+        </div>
+      </div>
+
+
+
+      {/* Decorative */}
+      <div className="fixed -bottom-40 -left-40 w-96 h-96 rounded-full border border-dashed border-zinc-200 dark:border-zinc-800 opacity-20 animate-spin-slow pointer-events-none"></div>
+    </main>
   );
 }
