@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import type { Project } from "@/data/projects";
 
 import StatusBar from "./StatusBar";
@@ -108,6 +108,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                             src={currentImage}
                             alt={project.name}
                             fill
+                            sizes="(max-width: 768px) 100vw, 75vw"
                             className="object-contain object-right transition-transform duration-1000 group-hover:scale-105"
                             priority
                         />
@@ -134,6 +135,26 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 <p className="info-item text-[12px] text-white/90 font-sans tracking-wide uppercase mt-1">
                     2022 - TODAY
                 </p>
+
+                {project.description && (
+                    <div className="info-item mt-10 max-w-[280px] sm:max-w-[320px] md:max-w-[380px] text-[14px] md:text-[15.5px] leading-[1.6] text-white/80 font-sans pointer-events-auto">
+                        {project.description.split('\n').map((paragraph, i) => {
+                            if (!paragraph.trim()) return null;
+                            // Inject bold styling specifically for "Cafecito 5K" string matches
+                            const parts = paragraph.split("Cafecito 5K");
+                            return (
+                                <p key={i} className="mb-5 last:mb-0">
+                                    {parts.map((part, idx) => (
+                                        <span key={idx}>
+                                            {part}
+                                            {idx < parts.length - 1 && <strong className="text-white font-[800]">Cafecito 5K</strong>}
+                                        </span>
+                                    ))}
+                                </p>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             {/* Vertical Gallery Controls & Dots (Requested change) */}
