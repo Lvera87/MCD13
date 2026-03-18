@@ -113,7 +113,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
         >
             {/* Project Image Container */}
             <div className="relative w-full h-full overflow-hidden rounded-[2.5rem]">
-                <div ref={imageRef} className="relative w-full h-full bg-zinc-950/50">
+                <div ref={imageRef} className="relative w-full h-full bg-zinc-950/20">
                     {currentImage ? (
                         <Image
                             src={currentImage}
@@ -147,17 +147,19 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                     </div>
                 )}
 
-                {/* Dynamic Black Contrast Overlay - Cinematic protection for cover text */}
+                {/* Targeted Lighting System - PROTECTS ORIGINAL COLORS AND BRIGHTNESS IN THE CENTER */}
                 <div 
-                    className={`absolute inset-0 bg-black/50 z-10 transition-opacity duration-700 pointer-events-none ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}
+                    className={`absolute inset-0 z-10 transition-opacity duration-1000 pointer-events-none ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}
                 >
-                    {/* Radial Vignette for extra depth */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]"></div>
+                    {/* Top Vignette (for Title) */}
+                    <div className="absolute inset-x-0 top-0 h-[30%] bg-gradient-to-b from-black/80 via-black/40 to-transparent"></div>
+                    
+                    {/* Bottom Vignette (for Description) */}
+                    <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                    
+                    {/* Center Clarity Mask - Ensures 100% original image is visible */}
+                    <div className="absolute inset-0 bg-transparent"></div>
                 </div>
-
-                {/* Advanced Gradient Overlay System - Supports top-left title and bottom-center description */}
-                <div className="absolute inset-0 bg-gradient-to-br from-zinc-950/80 via-transparent to-transparent z-15 pointer-events-none"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-15 pointer-events-none"></div>
             </div>
 
             {/* Top Content Overlay - Shadow Lighting Technique */}
