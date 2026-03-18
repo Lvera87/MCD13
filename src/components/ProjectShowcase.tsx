@@ -25,6 +25,8 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
 
 
 
+    const isAnimating = useRef(false);
+
     useGSAP(() => {
         if (containerRef.current) {
             gsap.from(containerRef.current, {
@@ -47,39 +49,49 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
 
     const nextImage = (e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
-        if (hasGallery) {
-            gsap.to(imageRef.current, {
+        if (hasGallery && !isAnimating.current) {
+            isAnimating.current = true;
+            const tl = gsap.timeline({
+                onComplete: () => { isAnimating.current = false; }
+            });
+
+            tl.to(imageRef.current, {
                 opacity: 0,
-                x: -20,
-                duration: 0.3,
+                x: -15,
+                duration: 0.2,
                 ease: "power2.in",
                 onComplete: () => {
                     setCurrentImageIndex((prev) => (prev + 1) % project.images!.length);
-                    gsap.fromTo(imageRef.current,
-                        { opacity: 0, x: 20 },
-                        { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
-                    );
                 }
-            });
+            })
+            .fromTo(imageRef.current,
+                { opacity: 0, x: 15 },
+                { opacity: 1, x: 0, duration: 0.25, ease: "expo.out" }
+            );
         }
     };
 
     const prevImage = (e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
-        if (hasGallery) {
-            gsap.to(imageRef.current, {
+        if (hasGallery && !isAnimating.current) {
+            isAnimating.current = true;
+            const tl = gsap.timeline({
+                onComplete: () => { isAnimating.current = false; }
+            });
+
+            tl.to(imageRef.current, {
                 opacity: 0,
-                x: 20,
-                duration: 0.3,
+                x: 15,
+                duration: 0.2,
                 ease: "power2.in",
                 onComplete: () => {
                     setCurrentImageIndex((prev) => (prev - 1 + project.images!.length) % project.images!.length);
-                    gsap.fromTo(imageRef.current,
-                        { opacity: 0, x: -20 },
-                        { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
-                    );
                 }
-            });
+            })
+            .fromTo(imageRef.current,
+                { opacity: 0, x: -15 },
+                { opacity: 1, x: 0, duration: 0.25, ease: "expo.out" }
+            );
         }
     };
 
@@ -118,6 +130,20 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                         </div>
                     )}
                 </div>
+
+                {/* Hidden Image Preloader for instant transitions */}
+                {hasGallery && (
+                    <div className="hidden pointer-events-none" aria-hidden="true">
+                        <Image 
+                            src={project.images![(currentImageIndex + 1) % project.images!.length]} 
+                            alt="pre" width={1} height={1} 
+                        />
+                        <Image 
+                            src={project.images![(currentImageIndex - 1 + project.images!.length) % project.images!.length]} 
+                            alt="pre" width={1} height={1} 
+                        />
+                    </div>
+                )}
 
                 {/* Dynamic Gradient Overlay - Balanced for top-left text and right image */}
                 <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-950/40 to-transparent opacity-90 z-10"></div>
@@ -190,7 +216,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
 
             {/* Status Bar integrated */}
             <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 z-40">
-                <StatusBar socialLinks={project.socialLinks} />
+                <StatusBar />
             </div>
         </div>
     );
