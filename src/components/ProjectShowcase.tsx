@@ -122,6 +122,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                             sizes="(max-width: 768px) 100vw, 75vw"
                             className="object-contain object-center transition-transform duration-1000 group-hover:scale-105"
                             priority
+                            unoptimized={true}
                         />
                     ) : (
                         <div className="w-full h-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
@@ -136,10 +137,12 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                         <Image 
                             src={project.images![(currentImageIndex + 1) % project.images!.length]} 
                             alt="pre" width={1} height={1} 
+                            unoptimized={true}
                         />
                         <Image 
                             src={project.images![(currentImageIndex - 1 + project.images!.length) % project.images!.length]} 
                             alt="pre" width={1} height={1} 
+                            unoptimized={true}
                         />
                     </div>
                 )}
@@ -149,32 +152,32 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 pointer-events-none"></div>
             </div>
 
-            {/* Top Content Overlay - Only visible on cover (index 0) */}
+            {/* Top Content Overlay - Shadow Lighting Technique */}
             <div
-                className={`absolute top-10 left-10 right-10 z-20 flex flex-col items-start gap-1 pointer-events-none transition-opacity duration-700 ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}
+                className={`absolute top-10 left-10 z-20 flex flex-col items-start gap-1 pointer-events-none transition-all duration-700 ${currentImageIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
             >
-                <h1 className="info-item font-sans text-[1.875rem] text-white font-[800] tracking-tight drop-shadow-md leading-none">
+                <h1 className="info-item font-sans text-[2rem] md:text-[2.5rem] text-white font-[900] tracking-tight leading-none drop-shadow-[0_2px_20px_rgba(0,0,0,0.9)]">
                     {project.name === "CAFECITO 5K" ? "Cafecito 5K" : project.name}
                 </h1>
 
-                <p className="info-item text-[12px] text-white/90 font-sans tracking-wide uppercase mt-1">
-                    2022 - TODAY
+                <p className="info-item text-[11px] md:text-[12px] text-white/80 font-sans tracking-[0.2em] uppercase mt-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
+                    {project.category} — 2022 - TODAY
                 </p>
             </div>
 
-            {/* Bottom Description Overlay - Centered and Snappy - Only visible on cover (index 0) */}
+            {/* Bottom Description Overlay - Shadow Lighting Technique (Position fixed as requested) */}
             {project.description && (
-                <div className={`absolute bottom-12 left-10 right-10 z-20 flex justify-center pointer-events-none transition-opacity duration-700 ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}>
-                    <div className="info-item max-w-[500px] text-center pointer-events-auto">
+                <div className={`absolute bottom-12 left-1/2 -translate-x-1/2 z-20 w-full max-w-[90%] md:max-w-[750px] flex justify-center pointer-events-none transition-all duration-700 ${currentImageIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+                    <div className="info-item text-center pointer-events-auto">
                         {project.description.split('\n').map((paragraph, i) => {
                             if (!paragraph.trim()) return null;
                             const parts = paragraph.split("Cafecito 5K");
                             return (
-                                <p key={i} className="text-[14px] md:text-[15.5px] leading-[1.6] text-white/70 font-sans mb-4 last:mb-0">
+                                <p key={i} className="text-[14.5px] md:text-[16px] leading-[1.7] text-white/90 font-sans mb-4 last:mb-0 drop-shadow-[0_1px_12px_rgba(0,0,0,1)]">
                                     {parts.map((part, idx) => (
                                         <span key={idx}>
                                             {part}
-                                            {idx < parts.length - 1 && <strong className="text-white font-[800]">Cafecito 5K</strong>}
+                                            {idx < parts.length - 1 && <strong className="text-white font-[900] drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]">Cafecito 5K</strong>}
                                         </span>
                                     ))}
                                 </p>
