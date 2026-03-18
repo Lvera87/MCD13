@@ -16,7 +16,6 @@ interface ProjectShowcaseProps {
 
 export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShowcaseProps) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const textContentRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -121,7 +120,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                             alt={project.name}
                             fill
                             sizes="(max-width: 768px) 100vw, 75vw"
-                            className="object-contain object-right transition-transform duration-1000 group-hover:scale-105"
+                            className="object-contain object-center transition-transform duration-1000 group-hover:scale-105"
                             priority
                         />
                     ) : (
@@ -145,14 +144,14 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                     </div>
                 )}
 
-                {/* Dynamic Gradient Overlay - Balanced for top-left text and right image */}
-                <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-950/40 to-transparent opacity-90 z-10"></div>
+                {/* Advanced Gradient Overlay System - Supports top-left title and bottom-center description */}
+                <div className="absolute inset-0 bg-gradient-to-br from-zinc-950/80 via-transparent to-transparent z-10 pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 pointer-events-none"></div>
             </div>
 
-            {/* Content Overlay */}
+            {/* Top Content Overlay - Only visible on cover (index 0) */}
             <div
-                ref={textContentRef}
-                className="absolute top-10 left-10 right-10 z-20 flex flex-col items-start gap-1 pointer-events-none"
+                className={`absolute top-10 left-10 right-10 z-20 flex flex-col items-start gap-1 pointer-events-none transition-opacity duration-700 ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}
             >
                 <h1 className="info-item font-sans text-[1.875rem] text-white font-[800] tracking-tight drop-shadow-md leading-none">
                     {project.name === "CAFECITO 5K" ? "Cafecito 5K" : project.name}
@@ -161,15 +160,17 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 <p className="info-item text-[12px] text-white/90 font-sans tracking-wide uppercase mt-1">
                     2022 - TODAY
                 </p>
+            </div>
 
-                {project.description && (
-                    <div className="info-item mt-10 max-w-[280px] sm:max-w-[320px] md:max-w-[380px] text-[14px] md:text-[15.5px] leading-[1.6] text-white/80 font-sans pointer-events-auto">
+            {/* Bottom Description Overlay - Centered and Snappy - Only visible on cover (index 0) */}
+            {project.description && (
+                <div className={`absolute bottom-12 left-10 right-10 z-20 flex justify-center pointer-events-none transition-opacity duration-700 ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}>
+                    <div className="info-item max-w-[500px] text-center pointer-events-auto">
                         {project.description.split('\n').map((paragraph, i) => {
                             if (!paragraph.trim()) return null;
-                            // Inject bold styling specifically for "Cafecito 5K" string matches
                             const parts = paragraph.split("Cafecito 5K");
                             return (
-                                <p key={i} className="mb-5 last:mb-0">
+                                <p key={i} className="text-[14px] md:text-[15.5px] leading-[1.6] text-white/70 font-sans mb-4 last:mb-0">
                                     {parts.map((part, idx) => (
                                         <span key={idx}>
                                             {part}
@@ -180,8 +181,8 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                             );
                         })}
                     </div>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* Vertical Gallery Controls & Dots (Requested change) */}
             <div className={`absolute top-1/2 -translate-y-1/2 -right-5 z-30 flex items-center gap-3 transition-opacity duration-500 ${hasGallery ? "opacity-100" : "opacity-20 pointer-events-none"}`}>
