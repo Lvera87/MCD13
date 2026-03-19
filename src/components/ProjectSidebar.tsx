@@ -64,14 +64,14 @@ export default function ProjectSidebar({ projects, activeProjectId, onProjectSel
                                 : "border-transparent bg-transparent hover:border-white/10 hover:bg-white/5"
                                 }`}
                         >
-                            <div suppressHydrationWarning className="flex items-center gap-5 w-full">
-                                <span className={`text-[10px] font-bold font-mono transition-colors duration-300 ${activeProjectId === "HOME" ? "text-white" : "text-white/20 group-hover:text-white/40"}`}>
-                                    00
-                                </span>
-                                <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 flex-1 text-left ${activeProjectId === "HOME" ? "text-white" : "text-white/30 group-hover:text-white/70"}`}>
-                                    HOME / INDEX
-                                </span>
-                            </div>
+                        <span suppressHydrationWarning className="flex items-center gap-5 w-full">
+                            <span className={`text-[10px] font-bold font-mono transition-colors duration-300 ${activeProjectId === "HOME" ? "text-white" : "text-white/20 group-hover:text-white/40"}`}>
+                                00
+                            </span>
+                            <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 flex-1 text-left ${activeProjectId === "HOME" ? "text-white" : "text-white/30 group-hover:text-white/70"}`}>
+                                HOME / INDEX
+                            </span>
+                        </span>
                         </button>
                     </div>
                     {projects.map((project) => {
@@ -90,7 +90,7 @@ export default function ProjectSidebar({ projects, activeProjectId, onProjectSel
                                         <div className="absolute left-2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white] animate-pulse"></div>
                                     )}
 
-                                    <div suppressHydrationWarning className="flex items-center gap-5 w-full">
+                                    <span suppressHydrationWarning className="flex items-center gap-5 w-full">
                                         <span className={`text-[10px] font-bold font-mono transition-colors duration-300 ${isActive ? "text-white" : "text-white/20 group-hover:text-white/40"}`}>
                                             {project.id}
                                         </span>
@@ -100,7 +100,7 @@ export default function ProjectSidebar({ projects, activeProjectId, onProjectSel
                                         {isActive && (
                                             <span className="material-icons text-[12px] text-white/50">chevron_right</span>
                                         )}
-                                    </div>
+                                    </span>
                                 </button>
                             </div>
                         );

@@ -60,7 +60,6 @@ export default function HomeCover() {
                                 alt="Miguel Camacho Silhouette" 
                                 fill 
                                 className="object-contain grayscale contrast-125" 
-                                priority
                             />
                         </div>
                     </div>

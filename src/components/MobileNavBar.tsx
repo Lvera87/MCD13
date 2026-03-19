@@ -116,7 +116,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                                         : "border-transparent bg-transparent active:bg-white/5"
                                 }`}
                             >
-                                <div suppressHydrationWarning className="flex items-center gap-5 w-full">
+                                <span suppressHydrationWarning className="flex items-center gap-5 w-full">
                                     <span className={`text-[10px] font-bold font-mono ${activeProjectId === "HOME" ? "text-white" : "text-white/20"}`}>
                                         00
                                     </span>
@@ -126,7 +126,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                                     {activeProjectId === "HOME" && (
                                         <span className="material-icons text-[12px] text-white/50">chevron_right</span>
                                     )}
-                                </div>
+                                </span>
                             </button>
                         </div>
 
@@ -146,7 +146,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                                         {isActive && (
                                             <div className="absolute left-2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white] animate-pulse" />
                                         )}
-                                        <div suppressHydrationWarning className="flex items-center gap-5 w-full">
+                                        <span suppressHydrationWarning className="flex items-center gap-5 w-full">
                                             <span className={`text-[10px] font-bold font-mono ${isActive ? "text-white" : "text-white/20"}`}>
                                                 {project.id}
                                             </span>
@@ -156,7 +156,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                                             {isActive && (
                                                 <span className="material-icons text-[12px] text-white/50">chevron_right</span>
                                             )}
-                                        </div>
+                                        </span>
                                     </button>
                                 </div>
                             );
