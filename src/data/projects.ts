@@ -2,6 +2,7 @@ export type Project = {
     id: string;
     name: string;
     category: string;
+    date?: string;
     image?: string;
     images?: string[];
     video?: string;
@@ -13,6 +14,7 @@ export const projects: Project[] = [
         id: "01",
         name: "CAFECITO 5K",
         category: "Branding & Event",
+        date: "2022 - TODAY",
         image: "/projects/cafecito_5k/01_001.webp",
         images: [
             "/projects/cafecito_5k/01_001.webp",
@@ -31,6 +33,7 @@ export const projects: Project[] = [
         id: "02",
         name: "THE 5.4 FUNKY RUN",
         category: "Sports Branding",
+        date: "2021 - TODAY",
         image: "/projects/02_T54FR/02_002.webp",
         images: [
             "/projects/02_T54FR/02_002.webp",
@@ -45,6 +48,7 @@ export const projects: Project[] = [
         id: "03",
         name: "BE THERE 5K – THE FAIR",
         category: "Event Identity",
+        date: "2023 - TODAY",
         image: "/projects/03_Be_There/03_002.webp",
         images: [
             "/projects/03_Be_There/03_002.webp",
@@ -61,6 +65,7 @@ export const projects: Project[] = [
         id: "04",
         name: "RACE DAY PROFESSIONALS (RDP)",
         category: "Sports Branding",
+        date: "2022 - TODAY",
         image: "/projects/04_RDP/04_002.webp",
         description: "Race Day Professionals is a company specialized in producing race events and experiences. We supported both the brand and its clients through comprehensive design solutions.\n\nFrom branded assets like inflatables and apparel to medals and race materials for multiple events, we ensured consistency, quality, and scalability across all visual outputs."
     },
@@ -68,6 +73,7 @@ export const projects: Project[] = [
         id: "05",
         name: "LEGAMIO",
         category: "Corporate Identity",
+        date: "2023 - 2025",
         image: "/projects/05_LEGAMIO/05_001.webp",
         images: [
             "/projects/05_LEGAMIO/05_001.webp",
@@ -85,6 +91,7 @@ export const projects: Project[] = [
         id: "06",
         name: "STB – STELA",
         category: "Tech & SaaS Branding",
+        date: "2020 - 2025",
         image: "/projects/06_STB-STELLA/06_001.webp",
         images: [
             "/projects/06_STB-STELLA/06_001.webp",
@@ -101,6 +108,7 @@ export const projects: Project[] = [
         id: "07",
         name: "T-SHIRT LAB",
         category: "Apparel Branding",
+        date: "2018 - 2024",
         image: "/projects/07_T-SHIRT LAB/07_001.webp",
         images: [
             "/projects/07_T-SHIRT LAB/07_001.webp",
@@ -117,6 +125,7 @@ export const projects: Project[] = [
         id: "08",
         name: "ITW",
         category: "Corporate Services",
+        date: "2024",
         image: "/projects/08_ITW/08_001.webp",
         images: ["/projects/08_ITW/08_001.webp"],
         description: "ITW is a company focused on advanced solutions and corporate services. We developed a consistent and professional visual system aligned with its business objectives.\n\nFrom website design to B2B marketing materials, we created a cohesive brand presence that supports communication, credibility, and growth."
@@ -125,6 +134,7 @@ export const projects: Project[] = [
         id: "09",
         name: "URBAN",
         category: "Editorial Design",
+        date: "2022 - 2024",
         image: "/projects/09_URBAN/09_001.webp",
         images: ["/projects/09_URBAN/09_001.webp"],
         description: "Urban is a travel insurance company based in Uruguay. We developed visual content aimed at both digital and traditional media channels.\n\nFrom social media video production to TV spots and corporate design, we created clear and engaging communication tailored to diverse audiences."
@@ -133,6 +143,7 @@ export const projects: Project[] = [
         id: "10",
         name: "SOULBOLT",
         category: "App UI/UX",
+        date: "2024",
         image: "/projects/10_SOULBOLT/10_001.webp",
         images: ["/projects/10_SOULBOLT/10_001.webp"],
         description: "Soulbolt is a craft coffee brand launched in 2024 with a focus on quality and identity. We developed its complete corporate image.\n\nOur work included logo design and social media content, building a brand that feels authentic, warm, and visually distinctive."
@@ -141,6 +152,7 @@ export const projects: Project[] = [
         id: "11",
         name: "IDEATE",
         category: "Agency Branding",
+        date: "2018 - 2024",
         image: "/projects/11_ideate/11_001.webp",
         images: ["/projects/11_ideate/11_001.webp"],
         description: "Ideate is an Australia-based company focused on high-level editorial design. We collaborated with the brand from 2018 to 2024.\n\nWe produced financial reports and infographics, delivering clean, structured, and visually compelling materials for corporate communication."
@@ -149,6 +161,7 @@ export const projects: Project[] = [
         id: "12",
         name: "TICKET EASY",
         category: "Product Design",
+        date: "2024",
         image: "/projects/12_TE/12_001.webp",
         images: [
             "/projects/12_TE/ANIMA HEADER.webp",
@@ -160,6 +173,7 @@ export const projects: Project[] = [
         id: "13",
         name: "SALAZAR LAW FIRM",
         category: "Web Design",
+        date: "2024",
         image: "/projects/12_TE/12_001.webp", // Reuse folder 12 as they are related
         images: [
             "/projects/12_TE/12_001.webp"
@@ -170,6 +184,7 @@ export const projects: Project[] = [
         id: "14",
         name: "ipm s.a.",
         category: "Corporate Identity",
+        date: "2025",
         image: "/projects/13_IPM/13_001.webp",
         images: ["/projects/13_IPM/13_001.webp"],
         description: "ipm s.a. is a Colombian company dedicated to the exploitation and commercialization of mineral coal. We developed its corporate website in 2025.\n\nThe project focused on delivering a high-level digital presence that reflects the company’s experience, scale, and professionalism within the industry."

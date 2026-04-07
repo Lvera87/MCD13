@@ -26,7 +26,7 @@ export default function NavItem({ id, name, isActive, onClick, variant }: NavIte
             className={`relative w-full flex items-center px-5 rounded-full border transition-all duration-300 group whitespace-nowrap ${heightClass} ${blurClass} ${isActive ? activeClass : inactiveClass}`}
         >
             {isActive && (
-                <div className="absolute left-2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white] animate-pulse" />
+                <div className="absolute left-2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white] motion-safe:animate-pulse" />
             )}
             <span className="flex items-center gap-5 w-full">
                 <span

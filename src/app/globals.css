@@ -90,6 +90,23 @@ body {
   }
 }
 
+/* Focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respect prefers-reduced-motion for Tailwind animations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .animate-spin,
+  .animate-spin-slow,
+  .animate-bounce {
+    animation: none;
+  }
+}
+
 .glass-panel {
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);

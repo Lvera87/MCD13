@@ -57,31 +57,31 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
             {/* Backdrop */}
             <div
                 ref={backdropRef}
-                suppressHydrationWarning
                 className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm pointer-events-none opacity-0 lg:hidden"
                 onClick={() => setIsOpen(false)}
                 style={{ pointerEvents: isOpen ? "auto" : "none" }}
             />
 
             {/* Bottom Drawer */}
-            <div
+            <nav
                 ref={drawerRef}
-                suppressHydrationWarning
+                role="navigation"
+                aria-label="Project navigation"
                 className="fixed bottom-0 left-0 right-0 z-[70] lg:hidden translate-y-full"
                 style={{ willChange: "transform" }}
             >
-                <div suppressHydrationWarning className="relative bg-zinc-950/95 backdrop-blur-2xl border-t border-white/10 rounded-t-[2rem] shadow-[0_-20px_60px_rgba(0,0,0,0.8)] max-h-[75svh] flex flex-col">
+                <div className="relative bg-zinc-950/95 backdrop-blur-2xl border-t border-white/10 rounded-t-[2rem] shadow-[0_-20px_60px_rgba(0,0,0,0.8)] max-h-[75svh] flex flex-col">
                     {/* Drag handle */}
-                    <div suppressHydrationWarning className="flex justify-center pt-3 pb-1 flex-none">
+                    <div className="flex justify-center pt-3 pb-1 flex-none">
                         <span className="block w-10 h-1 rounded-full bg-white/20" />
                     </div>
 
                     {/* Drawer Header */}
-                    <div suppressHydrationWarning className="flex items-center justify-between px-6 py-3 border-b border-white/5 flex-none">
+                    <div className="flex items-center justify-between px-6 py-3 border-b border-white/5 flex-none">
                         <button
                             onClick={() => handleSelect("HOME")}
                             aria-label="Go to home"
-                            className="opacity-70 hover:opacity-100 transition-opacity active:scale-95"
+                            className="opacity-70 hover:opacity-100 transition-opacity active:scale-95 focus-visible:outline-2 focus-visible:outline-white/50 focus-visible:outline-offset-2 rounded-sm"
                         >
                             <Image
                                 src="/LOGOMCD.svg"
@@ -95,7 +95,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                         <button
                             onClick={() => setIsOpen(false)}
                             aria-label="Close navigation"
-                            className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+                            className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90 focus-visible:outline-2 focus-visible:outline-white/50 focus-visible:outline-offset-2"
                         >
                             <span className="material-icons text-sm">close</span>
                         </button>
@@ -107,8 +107,8 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                     </p>
 
                     {/* Project List */}
-                    <div suppressHydrationWarning ref={listRef} className="flex-1 overflow-y-auto no-scrollbar px-4 pb-6">
-                        <div suppressHydrationWarning className="nav-item">
+                    <div ref={listRef} className="flex-1 overflow-y-auto no-scrollbar px-4 pb-6">
+                        <div className="nav-item">
                             <NavItem
                                 id="00"
                                 name="HOME / INDEX"
@@ -118,7 +118,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                             />
                         </div>
                         {projects.map((project) => (
-                            <div suppressHydrationWarning key={project.id} className="nav-item">
+                            <div key={project.id} className="nav-item">
                                 <NavItem
                                     id={project.id}
                                     name={project.name}
@@ -130,14 +130,14 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                         ))}
                     </div>
                 </div>
-            </div>
+            </nav>
 
             {/* Persistent Bottom Bar */}
-            <div suppressHydrationWarning className="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-bottom">
-                <div suppressHydrationWarning className="mx-4 mb-4">
-                    <div suppressHydrationWarning className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-zinc-950/90 backdrop-blur-xl border border-white/10 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
+            <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-bottom">
+                <div className="mx-4 mb-4">
+                    <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-zinc-950/90 backdrop-blur-xl border border-white/10 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
                         {/* Current Project Info */}
-                        <div suppressHydrationWarning className="flex items-center gap-3 min-w-0">
+                        <div className="flex items-center gap-3 min-w-0">
                             <span className="text-[10px] font-bold font-mono text-white/30 flex-none">
                                 {displayNumber}
                             </span>
@@ -147,16 +147,14 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                         </div>
 
                         {/* Right Controls */}
-                        <div suppressHydrationWarning className="flex items-center gap-2 flex-none">
+                        <div className="flex items-center gap-2 flex-none">
                             {/* Progress indicator */}
-                            <div suppressHydrationWarning className="flex items-center gap-1">
+                            <div className="flex items-center gap-1" aria-hidden="true">
                                 {projects.map((_, i) => (
                                     <span
                                         key={i}
                                         className={`block rounded-full transition-all duration-300 ${
-                                            i === activeIndex
-                                                ? "w-3 h-1.5 bg-white"
-                                                : "w-1 h-1 bg-white/20"
+                                            i === activeIndex ? "w-3 h-1.5 bg-white" : "w-1 h-1 bg-white/20"
                                         }`}
                                     />
                                 ))}
@@ -166,7 +164,9 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                             <button
                                 onClick={() => setIsOpen(true)}
                                 aria-label="Open project navigation"
-                                className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90 ml-1"
+                                aria-expanded={isOpen}
+                                aria-controls="project-drawer"
+                                className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90 ml-1 focus-visible:outline-2 focus-visible:outline-white/50 focus-visible:outline-offset-2"
                             >
                                 <span className="material-icons text-sm">grid_view</span>
                             </button>

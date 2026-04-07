@@ -63,8 +63,9 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
             gsap.killTweensOf(imageRef.current);
             isAnimating.current = true;
 
-            const exitScale = dir === "next" ? 0.98 : 1.02;
-            const enterScale = dir === "next" ? 1.02 : 0.98;
+            // Directional Y: next → content moves up, prev → moves down
+            const exitY = dir === "next" ? -14 : 14;
+            const enterY = dir === "next" ? 18 : -18;
 
             const tl = gsap.timeline({
                 onComplete: () => {
@@ -74,9 +75,9 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
 
             tl.to(imageRef.current, {
                 opacity: 0,
-                scale: exitScale,
-                duration: 0.18,
-                ease: "power2.inOut",
+                y: exitY,
+                duration: 0.3,
+                ease: "sine.inOut",
                 onComplete: () => {
                     setCurrentImageIndex((prev) =>
                         dir === "next"
@@ -86,8 +87,14 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 },
             }).fromTo(
                 imageRef.current,
-                { opacity: 0, scale: enterScale },
-                { opacity: 1, scale: 1, duration: 0.22, ease: "expo.out" }
+                { opacity: 0, y: enterY },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    ease: "expo.out",
+                    clearProps: "transform",
+                }
             );
         },
         [hasGallery, project.images]
@@ -126,7 +133,6 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
     return (
         <div
             ref={containerRef}
-            suppressHydrationWarning
             className="relative w-full h-[58svh] md:h-[75vh] lg:h-[80vh] max-h-[800px] bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-10 group"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -139,7 +145,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 <div
                     ref={imageRef}
                     className="relative w-full h-full bg-zinc-950/20"
-                    style={{ willChange: "opacity, transform" }}
+                    style={{ willChange: "opacity, transform, filter" }}
                 >
                     {currentImage ? (
                         <Image
@@ -200,7 +206,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 </h1>
 
                 <p className="info-item text-[10px] md:text-[12px] text-white/80 font-sans tracking-[0.2em] uppercase mt-1 md:mt-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
-                    {project.category} — 2022 - TODAY
+                    {project.category}{project.date ? ` — ${project.date}` : ""}
                 </p>
             </div>
 
