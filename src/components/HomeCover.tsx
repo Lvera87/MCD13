@@ -7,8 +7,6 @@ import { useRef } from "react";
 
 export default function HomeCover() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const textRef = useRef<HTMLDivElement>(null);
-    const faceRef = useRef<HTMLDivElement>(null);
 
     useGSAP(() => {
         // Only keep the background fade in
@@ -29,7 +27,7 @@ export default function HomeCover() {
                 {/* Header: Title and Portrait Group */}
                 <div suppressHydrationWarning className="flex justify-between items-start w-full">
                     {/* Title Group - Focused and Clean */}
-                    <div ref={textRef} suppressHydrationWarning className="flex flex-col">
+                    <div suppressHydrationWarning className="flex flex-col">
                         <h1 className="cover-title font-sans text-[2.8rem] md:text-[4.2rem] leading-[0.85] text-zinc-100 dark:text-[#f0f0f5] font-[800] tracking-tighter">
                             Miguel
                         </h1>
@@ -47,14 +45,14 @@ export default function HomeCover() {
                         <div suppressHydrationWarning className="w-14 h-10 md:w-20 md:h-16 relative opacity-40 mb-[-8px] md:mb-[-10px] z-10">
                             <Image 
                                 src="/LOGOMCD.svg" 
-                                alt="MCD 13" 
+                                alt="MCD Design Logo"
                                 fill 
                                 className="object-contain invert dark:invert-0" 
                                 priority
                             />
                         </div>
                         {/* Face Silhouette */}
-                        <div ref={faceRef} suppressHydrationWarning className="relative w-24 h-24 md:w-36 md:h-36 opacity-60">
+                        <div suppressHydrationWarning className="relative w-24 h-24 md:w-36 md:h-36 opacity-60">
                             <Image 
                                 src="/FACEMC.svg" 
                                 alt="Miguel Camacho Silhouette" 

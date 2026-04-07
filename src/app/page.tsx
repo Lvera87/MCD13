@@ -1,44 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import { projects } from "@/data/projects";
+import { useProjectNavigation } from "@/hooks/useProjectNavigation";
 import ProjectSidebar from "@/components/ProjectSidebar";
 import ProjectShowcase from "@/components/ProjectShowcase";
 import HomeCover from "@/components/HomeCover";
 import MobileNavBar from "@/components/MobileNavBar";
 
 export default function Home() {
-  const [activeProjectId, setActiveProjectId] = useState("HOME");
-
-  const activeProject = projects.find((p) => p.id === activeProjectId);
-
-  const handleNext = () => {
-    if (activeProjectId === "HOME") {
-        setActiveProjectId(projects[0].id);
-        return;
-    }
-    const currentIndex = projects.findIndex(p => p.id === activeProjectId);
-    const nextIndex = (currentIndex + 1) % projects.length;
-    setActiveProjectId(projects[nextIndex].id);
-  };
-
-  const handlePrev = () => {
-    if (activeProjectId === "HOME") {
-        setActiveProjectId(projects[projects.length - 1].id);
-        return;
-    }
-    const currentIndex = projects.findIndex(p => p.id === activeProjectId);
-    const prevIndex = (currentIndex - 1 + projects.length) % projects.length;
-    if (currentIndex === 0) {
-        setActiveProjectId("HOME");
-    } else {
-        setActiveProjectId(projects[prevIndex].id);
-    }
-  };
+  const { activeProjectId, setActiveProjectId, activeProject, handleNext, handlePrev } =
+    useProjectNavigation(projects);
 
   return (
     <main suppressHydrationWarning className="dark relative h-[100svh] max-h-[100svh] w-full bg-slate-50 dark:bg-zinc-950 transition-colors duration-500 overflow-hidden flex items-center justify-center p-4 pb-24 md:p-8 md:pb-8 lg:pb-8 select-none fixed inset-0">
-      {/* Background Layer - Using semantic tags to dodge invasive extensions */}
+      {/* Background Layer */}
       <section suppressHydrationWarning className="fixed inset-0 pointer-events-none z-0">
         <aside suppressHydrationWarning className="absolute inset-0 opacity-[0.4] dark:opacity-[0.1] bg-noise mix-blend-overlay"></aside>
         <aside suppressHydrationWarning className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 blur-[150px] rounded-full"></aside>
@@ -52,14 +27,14 @@ export default function Home() {
         <div suppressHydrationWarning className="col-span-12 lg:col-span-9 flex items-center justify-center h-full max-h-[85svh]">
           <div suppressHydrationWarning className="w-full h-full flex items-center justify-center">
             {activeProjectId === "HOME" ? (
-                <HomeCover />
+              <HomeCover />
             ) : activeProject ? (
-                <ProjectShowcase
-                    key={activeProjectId}
-                    project={activeProject}
-                    onNext={handleNext}
-                    onPrev={handlePrev}
-                />
+              <ProjectShowcase
+                key={activeProjectId}
+                project={activeProject}
+                onNext={handleNext}
+                onPrev={handlePrev}
+              />
             ) : null}
           </div>
         </div>
@@ -74,7 +49,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Mobile Navigation — hidden on desktop */}
+      {/* Mobile Navigation */}
       <MobileNavBar
         projects={projects}
         activeProjectId={activeProjectId}

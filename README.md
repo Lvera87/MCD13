@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MCD Design Portfolio
 
-## Getting Started
+Portfolio de diseño de Miguel Camacho — 14 proyectos de branding, identidad corporativa y diseño digital.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js 16 (App Router)
+- **UI**: React 19 + TypeScript (strict mode)
+- **Estilos**: Tailwind CSS v4
+- **Animaciones**: GSAP 3 + @gsap/react
+- **Fuentes**: Outfit, Playfair Display, Space Grotesk (Google Fonts)
+- **Tests**: Vitest + @testing-library/react
+
+## Estructura
+
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout con workaround para extensiones de browser
+│   ├── page.tsx            # Página principal — orquesta la navegación
+│   └── globals.css         # Design tokens y estilos globales
+├── components/
+│   ├── ProjectShowcase.tsx # Visor de proyecto con galería y fullscreen
+│   ├── ProjectSidebar.tsx  # Navegación lateral (desktop)
+│   ├── MobileNavBar.tsx    # Drawer de navegación (mobile)
+│   ├── NavItem.tsx         # Botón de navegación compartido entre sidebar y mobile
+│   ├── HomeCover.tsx       # Pantalla de inicio del portfolio
+│   ├── ThemeToggle.tsx     # Toggle light/dark
+│   └── StatusBar.tsx       # Indicador de disponibilidad
+├── hooks/
+│   ├── useProjectNavigation.ts  # Estado y lógica de navegación entre proyectos
+│   └── useSwipeDetection.ts     # Detección de gestos táctiles reutilizable
+├── data/
+│   └── projects.ts         # Datos de los 14 proyectos del portfolio
+├── lib/
+│   └── gsap.ts             # Configuración y registro de GSAP
+└── tests/
+    ├── setup.ts
+    ├── useSwipeDetection.test.ts
+    └── useProjectNavigation.test.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Desarrollo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Abre [http://localhost:3000](http://localhost:3000) en tu browser.
 
-## Learn More
+## Comandos
 
-To learn more about Next.js, take a look at the following resources:
+| Comando | Descripción |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción |
+| `npm run start` | Servidor de producción |
+| `npm run lint` | ESLint |
+| `npm run format` | Prettier (escribe cambios) |
+| `npm run format:check` | Prettier (solo verifica) |
+| `npm run test` | Tests con Vitest |
+| `npm run test:watch` | Tests en modo watch |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Nota técnica
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El layout usa `suppressHydrationWarning` en los contenedores principales como workaround necesario para extensiones de browser como Bitdefender, que inyectan el atributo `bis_skin_checked` en el DOM antes del hydration de React. El IIFE en `layout.tsx` limpia este atributo activamente con un `MutationObserver`.

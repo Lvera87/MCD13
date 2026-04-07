@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useRef, useState, useEffect, useCallback } from "react";
 import type { Project } from "@/data/projects";
+import { useSwipeDetection } from "@/hooks/useSwipeDetection";
 
 import StatusBar from "./StatusBar";
 
@@ -20,10 +21,6 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const isAnimating = useRef(false);
-    
-    // Swipe handling
-    const touchStartX = useRef<number | null>(null);
-    const touchStartY = useRef<number | null>(null);
 
     const hasGallery = project.images && project.images.length > 0;
     const currentImage = (hasGallery ? project.images![currentImageIndex] : project.image) || "";
@@ -43,7 +40,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
 
     const toggleFullscreen = useCallback(() => {
         if (isAnimating.current) return;
-        
+
         if (!isFullscreen) {
             const docEl = document.documentElement;
             if (docEl.requestFullscreen) {
@@ -58,125 +55,73 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
         }
     }, [isFullscreen]);
 
-    const nextImage = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
-        if (e) e.stopPropagation();
-        if (!hasGallery) return;
+    const changeImage = useCallback(
+        (dir: "next" | "prev", e?: React.MouseEvent | React.TouchEvent) => {
+            if (e) e.stopPropagation();
+            if (!hasGallery) return;
 
-        // Kill any in-progress tween — avoids isAnimating getting stuck on mobile
-        gsap.killTweensOf(imageRef.current);
-        isAnimating.current = true;
+            gsap.killTweensOf(imageRef.current);
+            isAnimating.current = true;
 
-        const tl = gsap.timeline({
-            onComplete: () => { isAnimating.current = false; }
-        });
+            const exitScale = dir === "next" ? 0.98 : 1.02;
+            const enterScale = dir === "next" ? 1.02 : 0.98;
 
-        tl.to(imageRef.current, {
-            opacity: 0,
-            scale: 0.98,
-            duration: 0.18,
-            ease: "power2.inOut",
-            onComplete: () => {
-                setCurrentImageIndex((prev) => (prev + 1) % project.images!.length);
-            }
-        })
-        .fromTo(imageRef.current, {
-            opacity: 0,
-            scale: 1.02
-        }, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.22,
-            ease: "expo.out"
-        });
-    }, [hasGallery, project.images]);
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    isAnimating.current = false;
+                },
+            });
 
-    const prevImage = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
-        if (e) e.stopPropagation();
-        if (!hasGallery) return;
+            tl.to(imageRef.current, {
+                opacity: 0,
+                scale: exitScale,
+                duration: 0.18,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    setCurrentImageIndex((prev) =>
+                        dir === "next"
+                            ? (prev + 1) % project.images!.length
+                            : (prev - 1 + project.images!.length) % project.images!.length
+                    );
+                },
+            }).fromTo(
+                imageRef.current,
+                { opacity: 0, scale: enterScale },
+                { opacity: 1, scale: 1, duration: 0.22, ease: "expo.out" }
+            );
+        },
+        [hasGallery, project.images]
+    );
 
-        // Kill any in-progress tween — avoids isAnimating getting stuck on mobile
-        gsap.killTweensOf(imageRef.current);
-        isAnimating.current = true;
-
-        const tl = gsap.timeline({
-            onComplete: () => { isAnimating.current = false; }
-        });
-
-        tl.to(imageRef.current, {
-            opacity: 0,
-            scale: 1.02,
-            duration: 0.18,
-            ease: "power2.inOut",
-            onComplete: () => {
-                setCurrentImageIndex((prev) => (prev - 1 + project.images!.length) % project.images!.length);
-            }
-        })
-        .fromTo(imageRef.current, {
-            opacity: 0,
-            scale: 0.98
-        }, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.22,
-            ease: "expo.out"
-        });
-    }, [hasGallery, project.images]);
-
-    // Touch Handlers for Swiping
-    const handleTouchStart = (e: React.TouchEvent) => {
-        touchStartX.current = e.touches[0].clientX;
-        touchStartY.current = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent) => {
-        if (touchStartX.current === null || touchStartY.current === null) return;
-
-        const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-        const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-
-        const isHorizontal = Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY);
-        const isVertical   = Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX);
-
-        if (isHorizontal) {
-            // Prevent accidental fullscreen toggle on swipe
-            e.preventDefault();
-            if (deltaX > 0) onPrev();
-            else onNext();
-        }
-
-        if (isVertical) {
-            // Prevent accidental fullscreen toggle on swipe
-            e.preventDefault();
-            if (deltaY > 0) prevImage(e);
-            else nextImage(e);
-        }
-
-        touchStartX.current = null;
-        touchStartY.current = null;
-    };
+    const { handleTouchStart, handleTouchEnd } = useSwipeDetection({
+        onSwipeLeft: onNext,
+        onSwipeRight: onPrev,
+        onSwipeUp: () => changeImage("next"),
+        onSwipeDown: () => changeImage("prev"),
+    });
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape" && isFullscreen) toggleFullscreen();
-            if (e.key === "ArrowUp") prevImage();
-            if (e.key === "ArrowDown") nextImage();
+            if (e.key === "ArrowUp") changeImage("prev");
+            if (e.key === "ArrowDown") changeImage("next");
             if (e.key === "ArrowLeft") onPrev();
             if (e.key === "ArrowRight") onNext();
         };
         window.addEventListener("keydown", handleKeyDown);
-        
+
         const handleFullscreenChange = () => {
             if (!document.fullscreenElement && isFullscreen) {
                 setIsFullscreen(false);
             }
         };
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+            document.removeEventListener("fullscreenchange", handleFullscreenChange);
         };
-    }, [isFullscreen, toggleFullscreen, prevImage, nextImage, onPrev, onNext]);
+    }, [isFullscreen, toggleFullscreen, changeImage, onPrev, onNext]);
 
     return (
         <div
@@ -187,7 +132,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
             onTouchEnd={handleTouchEnd}
         >
             {/* Project Image Container */}
-            <div 
+            <div
                 className="relative w-full h-full overflow-hidden rounded-[2.5rem] cursor-zoom-in group/image"
                 onClick={toggleFullscreen}
             >
@@ -215,21 +160,30 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
 
                 {hasGallery && (
                     <div className="hidden pointer-events-none" aria-hidden="true">
-                        <Image 
-                            src={project.images![(currentImageIndex + 1) % project.images!.length]} 
-                            alt="pre" width={1} height={1} 
+                        <Image
+                            src={project.images![(currentImageIndex + 1) % project.images!.length]}
+                            alt="pre"
+                            width={1}
+                            height={1}
                             unoptimized={true}
                         />
-                        <Image 
-                            src={project.images![(currentImageIndex - 1 + project.images!.length) % project.images!.length]} 
-                            alt="pre" width={1} height={1} 
+                        <Image
+                            src={
+                                project.images![
+                                    (currentImageIndex - 1 + project.images!.length) %
+                                        project.images!.length
+                                ]
+                            }
+                            alt="pre"
+                            width={1}
+                            height={1}
                             unoptimized={true}
                         />
                     </div>
                 )}
 
                 {/* Targeted Lighting System */}
-                <div 
+                <div
                     className={`absolute inset-0 z-10 transition-opacity duration-1000 pointer-events-none ${currentImageIndex === 0 ? "opacity-100" : "opacity-0"}`}
                 >
                     <div className="absolute inset-x-0 top-0 h-[30%] bg-gradient-to-b from-black/80 via-black/40 to-transparent"></div>
@@ -237,7 +191,7 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 </div>
             </div>
 
-            {/* Top Content Overlay - Shadow Lighting Technique */}
+            {/* Top Content Overlay */}
             <div
                 className={`absolute top-6 left-6 md:top-10 md:left-10 z-20 flex flex-col items-start gap-1 pointer-events-none transition-all duration-700 ${currentImageIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
             >
@@ -250,19 +204,28 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 </p>
             </div>
 
-            {/* Bottom Description Overlay - Shadow Lighting Technique (Position fixed as requested) */}
+            {/* Bottom Description Overlay */}
             {project.description && (
-                <div className={`absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-20 w-full px-6 md:px-0 max-w-[95%] md:max-w-[750px] flex justify-center pointer-events-none transition-all duration-700 ${currentImageIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+                <div
+                    className={`absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-20 w-full px-6 md:px-0 max-w-[95%] md:max-w-[750px] flex justify-center pointer-events-none transition-all duration-700 ${currentImageIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                >
                     <div className="info-item text-center pointer-events-auto">
-                        {project.description.split('\n').map((paragraph, i) => {
+                        {project.description.split("\n").map((paragraph, i) => {
                             if (!paragraph.trim()) return null;
                             const parts = paragraph.split("Cafecito 5K");
                             return (
-                                <p key={i} className="text-[13px] md:text-[16px] leading-[1.6] md:leading-[1.7] text-white/90 font-sans mb-3 md:mb-4 last:mb-0 drop-shadow-[0_1px_12px_rgba(0,0,0,1)]">
+                                <p
+                                    key={i}
+                                    className="text-[13px] md:text-[16px] leading-[1.6] md:leading-[1.7] text-white/90 font-sans mb-3 md:mb-4 last:mb-0 drop-shadow-[0_1px_12px_rgba(0,0,0,1)]"
+                                >
                                     {parts.map((part, idx) => (
                                         <span key={idx}>
                                             {part}
-                                            {idx < parts.length - 1 && <strong className="text-white font-[900] drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]">Cafecito 5K</strong>}
+                                            {idx < parts.length - 1 && (
+                                                <strong className="text-white font-[900] drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]">
+                                                    Cafecito 5K
+                                                </strong>
+                                            )}
                                         </span>
                                     ))}
                                 </p>
@@ -272,27 +235,32 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 </div>
             )}
 
-            {/* Vertical Gallery Controls & Dots - Inside frame on mobile, outside on desktop */}
-            <div className={`absolute top-1/2 -translate-y-1/2 right-2 md:-right-5 z-30 flex items-center gap-2 md:gap-3 transition-opacity duration-500 ${hasGallery ? "opacity-100" : "opacity-20 pointer-events-none"}`}>
+            {/* Vertical Gallery Controls & Dots */}
+            <div
+                className={`absolute top-1/2 -translate-y-1/2 right-2 md:-right-5 z-30 flex items-center gap-2 md:gap-3 transition-opacity duration-500 ${hasGallery ? "opacity-100" : "opacity-20 pointer-events-none"}`}
+            >
                 <div className="flex flex-col gap-1.5 items-center">
-                    {hasGallery && project.images?.map((_, idx) => (
-                        <div
-                            key={idx}
-                            className={`w-1 transition-all duration-300 rounded-full ${idx === currentImageIndex ? "h-6 bg-white shadow-[0_0_8px_white]" : "h-1 bg-white/20"}`}
-                        />
-                    ))}
+                    {hasGallery &&
+                        project.images?.map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={`w-1 transition-all duration-300 rounded-full ${idx === currentImageIndex ? "h-6 bg-white shadow-[0_0_8px_white]" : "h-1 bg-white/20"}`}
+                            />
+                        ))}
                 </div>
 
                 <div className="flex flex-col gap-0.5 p-0.5 rounded-full border border-white/10 bg-zinc-900/80 backdrop-blur-xl shadow-2xl pointer-events-auto">
                     <button
-                        onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                        onClick={(e) => changeImage("prev", e)}
+                        aria-label="Previous image"
                         className="w-8 h-8 flex items-center justify-center rounded-full text-white/30 hover:text-white hover:bg-white/10 transition-all active:scale-90 cursor-pointer"
                     >
                         <span className="material-icons text-sm">north</span>
                     </button>
                     <div className="w-3 h-[1px] bg-white/10 self-center"></div>
                     <button
-                        onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                        onClick={(e) => changeImage("next", e)}
+                        aria-label="Next image"
                         className="w-8 h-8 flex items-center justify-center rounded-full text-white/30 hover:text-white hover:bg-white/10 transition-all active:scale-90 cursor-pointer"
                     >
                         <span className="material-icons text-sm">south</span>
@@ -300,16 +268,18 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 </div>
             </div>
 
-            {/* Navigation Projects Arrows - Inside frame on mobile */}
+            {/* Navigation Projects Arrows */}
             <div className="absolute top-1/2 left-2 md:-left-5 -translate-y-1/2 flex flex-col gap-2 z-30 transition-all">
                 <button
                     onClick={onPrev}
+                    aria-label="Previous project"
                     className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-black/40 md:bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all hover:scale-110 active:scale-90"
                 >
                     <span className="material-icons text-lg md:text-xl">west</span>
                 </button>
                 <button
                     onClick={onNext}
+                    aria-label="Next project"
                     className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-black/40 md:bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all hover:scale-110 active:scale-90"
                 >
                     <span className="material-icons text-lg md:text-xl">east</span>
@@ -321,17 +291,21 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                 <StatusBar />
             </div>
 
-            {/* IMMERSIVE FULLSCREEN LIGHTBOX MODE (TRUE FULL SCREEN - SENIOR SOLUTION) */}
+            {/* Fullscreen Lightbox */}
             {isFullscreen && (
-                <div 
+                <div
                     className="fixed inset-0 z-[100] bg-black animate-in fade-in duration-700 overflow-hidden"
                     onClick={toggleFullscreen}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    <div className="absolute top-8 right-8 text-white/20 hover:text-white transition-opacity cursor-pointer z-[110]">
+                    <button
+                        onClick={toggleFullscreen}
+                        aria-label="Close fullscreen"
+                        className="absolute top-8 right-8 text-white/20 hover:text-white transition-opacity cursor-pointer z-[110] w-12 h-12 flex items-center justify-center"
+                    >
                         <span className="material-icons text-[2.5rem]">close</span>
-                    </div>
+                    </button>
 
                     <div className="relative w-full h-full flex items-center justify-center">
                         <Image
@@ -342,17 +316,19 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                             unoptimized={true}
                             priority
                         />
-                        
+
                         {hasGallery && (
                             <div className="absolute inset-0 flex items-center justify-between pointer-events-none px-4 md:px-8">
                                 <button
-                                    onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                                    onClick={(e) => changeImage("prev", e)}
+                                    aria-label="Previous image"
                                     className="hidden md:flex w-16 h-16 rounded-full bg-black/5 border border-white/5 items-center justify-center text-white/10 hover:text-white/50 hover:bg-black/20 transition-all pointer-events-auto active:scale-90"
                                 >
                                     <span className="material-icons text-[3rem]">chevron_left</span>
                                 </button>
                                 <button
-                                    onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                                    onClick={(e) => changeImage("next", e)}
+                                    aria-label="Next image"
                                     className="hidden md:flex w-16 h-16 rounded-full bg-black/5 border border-white/5 items-center justify-center text-white/10 hover:text-white/50 hover:bg-black/20 transition-all pointer-events-auto active:scale-90"
                                 >
                                     <span className="material-icons text-[3rem]">chevron_right</span>
@@ -361,7 +337,8 @@ export default function ProjectShowcase({ project, onNext, onPrev }: ProjectShow
                         )}
 
                         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/10 font-mono text-[8px] md:text-[9px] tracking-[.5em] md:tracking-[.6em] uppercase z-[110]">
-                            {String(currentImageIndex + 1).padStart(2, '0')} — {String(project.images?.length || 1).padStart(2, '0')}
+                            {String(currentImageIndex + 1).padStart(2, "0")} —{" "}
+                            {String(project.images?.length || 1).padStart(2, "0")}
                         </div>
                     </div>
                 </div>

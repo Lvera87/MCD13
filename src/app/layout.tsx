@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Outfit, Playfair_Display, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
@@ -38,8 +37,8 @@ export default function RootLayout({
                 const removeAttr = () => {
                   document.querySelectorAll('[bis_skin_checked]').forEach(el => el.removeAttribute('bis_skin_checked'));
                 };
-                ATTR_OBSERVER = new MutationObserver(removeAttr);
-                ATTR_OBSERVER.observe(document.documentElement, { attributes: true, subtree: true, childList: true });
+                const observer = new MutationObserver(removeAttr);
+                observer.observe(document.documentElement, { attributes: true, subtree: true, childList: true });
                 
                 // 2. SILENCIO DE CONSOLA
                 const silence = (...args) => {

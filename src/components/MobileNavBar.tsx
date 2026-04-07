@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { gsap } from "@/lib/gsap";
 import Image from "next/image";
 import type { Project } from "@/data/projects";
+import NavItem from "./NavItem";
 
 interface MobileNavBarProps {
     projects: Project[];
@@ -22,7 +23,6 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
     const displayLabel = activeProjectId === "HOME" ? "HOME / INDEX" : activeProject?.name ?? "—";
     const displayNumber = activeProjectId === "HOME" ? "00" : activeProject?.id ?? "—";
 
-    // Animate drawer open/close
     useEffect(() => {
         if (!drawerRef.current || !backdropRef.current) return;
 
@@ -32,10 +32,10 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
             gsap.to(drawerRef.current, { y: "0%", duration: 0.45, ease: "expo.out" });
             gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" });
 
-            // Stagger list items
             if (listRef.current) {
                 const items = listRef.current.querySelectorAll(".nav-item");
-                gsap.fromTo(items,
+                gsap.fromTo(
+                    items,
                     { opacity: 0, y: 12 },
                     { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: "expo.out", delay: 0.15 }
                 );
@@ -54,7 +54,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
 
     return (
         <>
-            {/* ── Backdrop ── */}
+            {/* Backdrop */}
             <div
                 ref={backdropRef}
                 suppressHydrationWarning
@@ -63,7 +63,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                 style={{ pointerEvents: isOpen ? "auto" : "none" }}
             />
 
-            {/* ── Bottom Drawer ── */}
+            {/* Bottom Drawer */}
             <div
                 ref={drawerRef}
                 suppressHydrationWarning
@@ -80,19 +80,21 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                     <div suppressHydrationWarning className="flex items-center justify-between px-6 py-3 border-b border-white/5 flex-none">
                         <button
                             onClick={() => handleSelect("HOME")}
+                            aria-label="Go to home"
                             className="opacity-70 hover:opacity-100 transition-opacity active:scale-95"
                         >
                             <Image
-                            src="/LOGOMCD.svg"
-                            alt="MCD Logo"
-                            width={200}
-                            height={60}
-                            className="dark:invert-0 invert w-[100px] h-auto"
-                            priority
-                        />
+                                src="/LOGOMCD.svg"
+                                alt="MCD Logo"
+                                width={200}
+                                height={60}
+                                className="dark:invert-0 invert w-[100px] h-auto"
+                                priority
+                            />
                         </button>
                         <button
                             onClick={() => setIsOpen(false)}
+                            aria-label="Close navigation"
                             className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
                         >
                             <span className="material-icons text-sm">close</span>
@@ -106,66 +108,31 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
 
                     {/* Project List */}
                     <div suppressHydrationWarning ref={listRef} className="flex-1 overflow-y-auto no-scrollbar px-4 pb-6">
-                        {/* Home Item */}
                         <div suppressHydrationWarning className="nav-item">
-                            <button
+                            <NavItem
+                                id="00"
+                                name="HOME / INDEX"
+                                isActive={activeProjectId === "HOME"}
                                 onClick={() => handleSelect("HOME")}
-                                className={`relative w-full flex items-center h-11 px-5 rounded-full border transition-all duration-300 group whitespace-nowrap mb-1 ${
-                                    activeProjectId === "HOME"
-                                        ? "border-white/20 bg-white/10 shadow-[0_4px_12px_rgba(255,255,255,0.03)]"
-                                        : "border-transparent bg-transparent active:bg-white/5"
-                                }`}
-                            >
-                                <span suppressHydrationWarning className="flex items-center gap-5 w-full">
-                                    <span className={`text-[10px] font-bold font-mono ${activeProjectId === "HOME" ? "text-white" : "text-white/20"}`}>
-                                        00
-                                    </span>
-                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] flex-1 text-left ${activeProjectId === "HOME" ? "text-white" : "text-white/30"}`}>
-                                        HOME / INDEX
-                                    </span>
-                                    {activeProjectId === "HOME" && (
-                                        <span className="material-icons text-[12px] text-white/50">chevron_right</span>
-                                    )}
-                                </span>
-                            </button>
+                                variant="mobile"
+                            />
                         </div>
-
-                        {/* Project Items */}
-                        {projects.map((project) => {
-                            const isActive = project.id === activeProjectId;
-                            return (
-                                <div suppressHydrationWarning key={project.id} className="nav-item">
-                                    <button
-                                        onClick={() => handleSelect(project.id)}
-                                        className={`relative w-full flex items-center h-11 px-5 rounded-full border transition-all duration-300 group whitespace-nowrap mb-1 ${
-                                            isActive
-                                                ? "border-white/20 bg-white/10 shadow-[0_4px_12px_rgba(255,255,255,0.03)]"
-                                                : "border-transparent bg-transparent active:bg-white/5"
-                                        }`}
-                                    >
-                                        {isActive && (
-                                            <div className="absolute left-2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_white] animate-pulse" />
-                                        )}
-                                        <span suppressHydrationWarning className="flex items-center gap-5 w-full">
-                                            <span className={`text-[10px] font-bold font-mono ${isActive ? "text-white" : "text-white/20"}`}>
-                                                {project.id}
-                                            </span>
-                                            <span className={`text-[10px] font-black uppercase tracking-[0.2em] flex-1 text-left ${isActive ? "text-white" : "text-white/30"}`}>
-                                                {project.name}
-                                            </span>
-                                            {isActive && (
-                                                <span className="material-icons text-[12px] text-white/50">chevron_right</span>
-                                            )}
-                                        </span>
-                                    </button>
-                                </div>
-                            );
-                        })}
+                        {projects.map((project) => (
+                            <div suppressHydrationWarning key={project.id} className="nav-item">
+                                <NavItem
+                                    id={project.id}
+                                    name={project.name}
+                                    isActive={project.id === activeProjectId}
+                                    onClick={() => handleSelect(project.id)}
+                                    variant="mobile"
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* ── Persistent Bottom Bar ── */}
+            {/* Persistent Bottom Bar */}
             <div suppressHydrationWarning className="fixed bottom-0 left-0 right-0 z-50 lg:hidden safe-bottom">
                 <div suppressHydrationWarning className="mx-4 mb-4">
                     <div suppressHydrationWarning className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-zinc-950/90 backdrop-blur-xl border border-white/10 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
@@ -181,7 +148,7 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
 
                         {/* Right Controls */}
                         <div suppressHydrationWarning className="flex items-center gap-2 flex-none">
-                            {/* Progress indicator — using span to avoid Bitdefender bis_skin_checked injection on div */}
+                            {/* Progress indicator */}
                             <div suppressHydrationWarning className="flex items-center gap-1">
                                 {projects.map((_, i) => (
                                     <span
@@ -198,8 +165,8 @@ export default function MobileNavBar({ projects, activeProjectId, onProjectSelec
                             {/* Open Menu Button */}
                             <button
                                 onClick={() => setIsOpen(true)}
-                                className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90 ml-1"
                                 aria-label="Open project navigation"
+                                className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90 ml-1"
                             >
                                 <span className="material-icons text-sm">grid_view</span>
                             </button>
