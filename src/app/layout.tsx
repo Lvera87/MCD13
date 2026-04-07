@@ -29,6 +29,7 @@ export default function RootLayout({
       <head>
         <title>Design Portfolio - Miguel Camacho</title>
         <meta name="description" content="Design Portfolio" />
+        <link rel="icon" type="image/svg+xml" href="/LOGOMCD.svg" />
         {/* Remove bis_skin_checked injected by Bitdefender to avoid React reconciler warnings */}
         <script
           dangerouslySetInnerHTML={{
