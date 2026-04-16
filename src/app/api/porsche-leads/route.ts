@@ -14,7 +14,7 @@ type LeadPayload = {
   website?: string;
 };
 
-const TO_EMAIL = "luisvera105@gmail.com";
+const TO_EMAIL = "Mc13Design@gmail.com";
 const FROM_EMAIL = "Porsche 911 T <onboarding@resend.dev>";
 const SUBJECT_PREFIX = "[Porsche 911 T] New inquiry";
 
