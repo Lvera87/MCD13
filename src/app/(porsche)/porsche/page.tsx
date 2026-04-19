@@ -16,8 +16,8 @@ type GalleryCategory =
 
 const GALLERY: Record<GalleryCategory, { srcs: string[]; caps: string[] }> = {
   exterior: {
-    srcs: ['/porsche/img/arb-01.webp','/porsche/img/arb-1c.webp','/porsche/img/arb-02.webp','/porsche/img/arb-03a.webp','/porsche/img/arb-03b.webp','/porsche/img/arb-04a.webp','/porsche/img/arb-04b.webp','/porsche/img/arb-04c.webp','/porsche/img/arb-04d.webp','/porsche/img/arb-05.webp','/porsche/img/arb-07a.webp','/porsche/img/arb-07b.webp','/porsche/img/arb-07c.webp','/porsche/img/arb-07d.webp'],
-    caps: ['Side profile','Side profile — alternate','Rear three-quarter','Front three-quarter left','Front three-quarter right','Rear straight','Rear angle left','Rear angle right','Rear detail','Hood & trunk open','Headlight left — Marchal fog','Headlight right','Taillight left','Taillight right'],
+    srcs: ['/porsche/img/arb-01.webp','/porsche/img/arb-02.webp','/porsche/img/arb-03a.webp','/porsche/img/arb-03b.webp','/porsche/img/arb-04a.webp','/porsche/img/arb-04b.webp','/porsche/img/arb-04c.webp','/porsche/img/arb-04d.webp','/porsche/img/arb-05.webp','/porsche/img/arb-07a.webp','/porsche/img/arb-07b.webp','/porsche/img/arb-07c.webp','/porsche/img/arb-07d.webp'],
+    caps: ['Side profile','Rear three-quarter','Front three-quarter left','Front three-quarter right','Rear straight','Rear angle left','Rear angle right','Rear detail','Hood & trunk open','Headlight left — Marchal fog','Headlight right','Taillight left','Taillight right'],
   },
   engine: {
     srcs: ['/porsche/img/arb-06a.webp','/porsche/img/arb-06b.webp','/porsche/img/arb-06c.webp','/porsche/img/arb-18a.webp','/porsche/img/arb-18b.webp','/porsche/img/arb-18c.webp'],
@@ -32,8 +32,8 @@ const GALLERY: Record<GalleryCategory, { srcs: string[]; caps: string[] }> = {
     caps: ['Front trunk — top view','Front trunk — wide','Spare wheel','Frunk floor detail','Fuel cap','Wiring & mechanics','Chassis plate — door sill','Chassis plate closeup'],
   },
   interior: {
-    srcs: ['/porsche/img/arb-11.webp','/porsche/img/arb-12a.webp','/porsche/img/arb-12b.webp','/porsche/img/arb-12c.webp','/porsche/img/arb-12d.webp','/porsche/img/arb-13.webp','/porsche/img/arb-14a.webp','/porsche/img/arb-14b.webp','/porsche/img/arb-14c.webp','/porsche/img/arb-14d.webp','/porsche/img/arb-14e.webp','/porsche/img/arb-17a.webp','/porsche/img/arb-17b.webp'],
-    caps: ['Full cabin — Recaro seats & wood wheel','Dashboard','Passenger side','Becker Frankfurt AM/FM radio','Glovebox slot','Rear seats — B-pillar','Door sill','Rear seat — angle 1','Rear seat — angle 2','Rear seat — angle 3','Seat side entry','Headliner','Pedals & Cocomats'],
+    srcs: ['/porsche/img/arb-1c.webp','/porsche/img/arb-11.webp','/porsche/img/arb-12a.webp','/porsche/img/arb-12b.webp','/porsche/img/arb-12c.webp','/porsche/img/arb-12d.webp','/porsche/img/arb-13.webp','/porsche/img/arb-14a.webp','/porsche/img/arb-14b.webp','/porsche/img/arb-14c.webp','/porsche/img/arb-14d.webp','/porsche/img/arb-14e.webp','/porsche/img/arb-17a.webp','/porsche/img/arb-17b.webp'],
+    caps: ['Cabin overview','Full cabin — Recaro seats & wood wheel','Dashboard','Passenger side','Becker Frankfurt AM/FM radio','Glovebox slot','Rear seats — B-pillar','Door sill','Rear seat — angle 1','Rear seat — angle 2','Rear seat — angle 3','Seat side entry','Headliner','Pedals & Cocomats'],
   },
   gauges: {
     srcs: ['/porsche/img/arb-15a.webp','/porsche/img/arb-15b.webp','/porsche/img/arb-15c.webp','/porsche/img/arb-15d.webp','/porsche/img/arb-16a.webp','/porsche/img/arb-16b.webp','/porsche/img/arb-16c.webp','/porsche/img/arb-16d.webp'],
